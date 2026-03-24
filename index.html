@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduChain University – Shape Your Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --cream: #faf8f3;
+    --gold: #c9a84c;
+    --gold-light: #e8c96b;
+    --rust: #c0392b;
+    --slate: #2c3e50;
+    --mist: #f0ede6;
+    --text-muted: #6b7280;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body.dark {
+    --cream: #0d0d0d;
+    --ink: #f5f0e8;
+    --mist: #1a1a1a;
+    --text-muted: #9ca3af;
+  }
+
+  /* PROGRESS BAR */
+  #progressBar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    width: 0%; z-index: 9999; transition: width 0.1s;
+  }
+
+  /* LOADER */
+  .loader {
+    position: fixed; inset: 0; background: var(--ink);
+    display: flex; justify-content: center; align-items: center; z-index: 9998;
+    flex-direction: column; gap: 16px;
+  }
+  .loader-logo { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--gold); letter-spacing: 2px; }
+  .loader-bar { width: 200px; height: 2px; background: #333; position: relative; overflow: hidden; }
+  .loader-bar::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%; background: var(--gold);
+    animation: loadSlide 1.2s ease forwards;
+  }
+  @keyframes loadSlide { to { left: 0; } }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    transition: all 0.3s;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-decoration: none;
+  }
+  .nav-logo span { color: white; }
+
+  .nav-links ul { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    color: rgba(255,255,255,0.75); text-decoration: none;
+    font-size: 0.82rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .search-box {
+    padding: 7px 14px; border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08); border-radius: 20px;
+    color: white; font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+    outline: none; width: 160px; transition: all 0.3s;
+  }
+  .search-box::placeholder { color: rgba(255,255,255,0.4); }
+  .search-box:focus { border-color: var(--gold); width: 200px; }
+
+  .dark-toggle {
+    cursor: pointer; color: rgba(255,255,255,0.6);
+    font-size: 1.1rem; transition: color 0.2s;
+  }
+  .dark-toggle:hover { color: var(--gold); }
+
+  .fa-bars { display: none; color: white; font-size: 1.3rem; cursor: pointer; }
+
+  @media(max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .fa-bars { display: block; }
+    .search-box { display: none; }
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: url('https://images.unsplash.com/photo-1562774053-701939374585?w=1800&q=80') center/cover no-repeat;
+    position: relative;
+    display: flex; align-items: center;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(13,13,13,0.85) 0%, rgba(13,13,13,0.5) 60%, rgba(13,13,13,0.2) 100%);
+  }
+  .hero-content {
+    position: relative; z-index: 1;
+    max-width: 700px; margin-left: 10%;
+    animation: heroFade 1s ease 0.5s both;
+  }
+  @keyframes heroFade { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(201,168,76,0.2); border: 1px solid var(--gold);
+    color: var(--gold); font-size: 0.72rem; letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 20px; margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 900; color: white; line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .hero h1 em { color: var(--gold); font-style: normal; }
+
+  .hero p {
+    font-size: 1.1rem; color: rgba(255,255,255,0.75);
+    max-width: 520px; margin-bottom: 40px; line-height: 1.8;
+  }
+
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn-primary {
+    padding: 14px 36px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--ink); font-weight: 700; font-size: 0.88rem;
+    letter-spacing: 1px; text-transform: uppercase;
+    border: none; border-radius: 4px; text-decoration: none;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.4); }
+
+  .btn-secondary {
+    padding: 14px 36px;
+    background: transparent; color: white;
+    border: 1px solid rgba(255,255,255,0.4);
+    font-weight: 500; font-size: 0.88rem;
+    letter-spacing: 1px; text-transform: uppercase;
+    border-radius: 4px; text-decoration: none; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-stats {
+    position: absolute; bottom: 60px; left: 10%;
+    display: flex; gap: 48px; z-index: 1;
+    animation: heroFade 1s ease 0.9s both;
+  }
+  .stat { color: white; }
+  .stat strong { display: block; font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--gold); }
+  .stat span { font-size: 0.82rem; color: rgba(255,255,255,0.6); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* SECTION COMMON */
+  section { padding: 100px 60px; }
+
+  .section-label {
+    font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; line-height: 1.15;
+    color: var(--ink); margin-bottom: 16px;
+  }
+  body.dark .section-title { color: var(--ink); }
+
+  .section-sub {
+    color: var(--text-muted); max-width: 560px;
+    font-size: 1rem; margin-bottom: 60px;
+  }
+
+  /* COURSES */
+  .courses { background: var(--mist); }
+
+  .courses-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  @media(max-width: 900px) { .courses-grid { grid-template-columns: 1fr; } }
+
+  .course-card {
+    background: var(--cream);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  body.dark .course-card { background: #1a1a1a; border-color: rgba(255,255,255,0.08); }
+
+  .course-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+
+  .course-card img {
+    width: 100%; height: 200px; object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .course-card:hover img { transform: scale(1.04); }
+
+  .course-tag {
+    position: absolute; top: 16px; left: 16px;
+    background: var(--gold); color: var(--ink);
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 3px;
+  }
+
+  .course-body { padding: 28px; }
+  .course-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;
+    color: var(--ink);
+  }
+  body.dark .course-body h3 { color: var(--ink); }
+  .course-body p { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; }
+
+  .course-meta { display: flex; gap: 20px; font-size: 0.8rem; color: var(--text-muted); }
+  .course-meta i { color: var(--gold); margin-right: 4px; }
+
+  /* CAMPUS */
+  .campus { background: var(--cream); }
+  body.dark .campus { background: var(--cream); }
+
+  .campus-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 320px 320px;
+    gap: 16px;
+  }
+
+  @media(max-width: 900px) { .campus-grid { grid-template-columns: 1fr; grid-template-rows: auto; } }
+
+  .campus-item {
+    position: relative; overflow: hidden; border-radius: 8px;
+    cursor: pointer;
+  }
+  .campus-item:first-child { grid-row: span 2; }
+
+  .campus-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s;
+  }
+  .campus-item:hover img { transform: scale(1.06); }
+
+  .campus-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,13,13,0.8) 0%, transparent 60%);
+    display: flex; align-items: flex-end; padding: 24px;
+  }
+  .campus-overlay h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: white; font-weight: 700;
+  }
+  .campus-overlay p { color: rgba(255,255,255,0.7); font-size: 0.82rem; margin-top: 4px; }
+
+  /* FACILITIES */
+  .facilities { background: var(--mist); }
+  .facilities-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  @media(max-width: 900px) { .facilities-grid { grid-template-columns: 1fr; } }
+
+  .facility-card {
+    text-align: center; padding: 48px 32px;
+    background: var(--cream);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative; overflow: hidden;
+  }
+  body.dark .facility-card { background: #1a1a1a; border-color: rgba(255,255,255,0.08); }
+  .facility-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transform: scaleX(0); transition: transform 0.3s;
+  }
+  .facility-card:hover::before { transform: scaleX(1); }
+  .facility-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+
+  .facility-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px; font-size: 1.8rem; color: var(--ink);
+  }
+  .facility-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; margin-bottom: 12px; color: var(--ink);
+  }
+  body.dark .facility-card h3 { color: var(--ink); }
+  .facility-card p { font-size: 0.92rem; color: var(--text-muted); }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--ink); }
+
+  .testimonials .section-title { color: var(--cream); }
+  .testimonials .section-sub { color: rgba(255,255,255,0.5); }
+
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+  @media(max-width: 768px) { .testimonials-grid { grid-template-columns: 1fr; } }
+
+  .testimonial-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 36px;
+    transition: border-color 0.3s;
+  }
+  .testimonial-card:hover { border-color: var(--gold); }
+
+  .testimonial-quote {
+    font-size: 3rem; color: var(--gold); line-height: 1;
+    font-family: 'Playfair Display', serif; margin-bottom: 16px;
+  }
+  .testimonial-card p { color: rgba(255,255,255,0.75); font-size: 0.98rem; line-height: 1.8; margin-bottom: 24px; }
+
+  .testimonial-author { display: flex; align-items: center; gap: 16px; }
+  .testimonial-author img {
+    width: 52px; height: 52px; border-radius: 50%;
+    object-fit: cover; border: 2px solid var(--gold);
+  }
+  .testimonial-author h4 { color: white; font-size: 0.95rem; font-weight: 600; }
+  .testimonial-author span { color: var(--gold); font-size: 0.8rem; }
+
+  .stars { color: var(--gold); font-size: 0.78rem; margin-bottom: 4px; }
+
+  /* NEWSLETTER */
+  .newsletter {
+    background: linear-gradient(135deg, var(--slate) 0%, var(--ink) 100%);
+    text-align: center; padding: 80px 60px;
+  }
+  .newsletter h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; color: white; margin-bottom: 12px;
+  }
+  .newsletter p { color: rgba(255,255,255,0.6); margin-bottom: 36px; }
+
+  .newsletter-form { display: flex; justify-content: center; gap: 0; max-width: 480px; margin: 0 auto; }
+  .newsletter-form input {
+    flex: 1; padding: 14px 20px;
+    border: 1px solid rgba(255,255,255,0.15); border-right: none;
+    background: rgba(255,255,255,0.08); color: white;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    border-radius: 4px 0 0 4px; outline: none;
+  }
+  .newsletter-form input::placeholder { color: rgba(255,255,255,0.4); }
+  .newsletter-form button {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--ink); font-weight: 700; font-size: 0.85rem;
+    letter-spacing: 1px; text-transform: uppercase;
+    border: none; border-radius: 0 4px 4px 0; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .newsletter-form button:hover { opacity: 0.9; }
+
+  /* CTA */
+  .cta {
+    background: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&q=80') center/cover no-repeat;
+    position: relative; text-align: center; padding: 120px 60px;
+  }
+  .cta::before {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(13,13,13,0.72);
+  }
+  .cta-content { position: relative; z-index: 1; }
+  .cta h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900;
+    color: white; margin-bottom: 32px; line-height: 1.2;
+  }
+  .cta h1 em { color: var(--gold); font-style: normal; }
+
+  /* FOOTER */
+  footer {
+    background: #080808; padding: 60px; color: rgba(255,255,255,0.5);
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px; margin-bottom: 48px;
+  }
+  @media(max-width: 768px) { .footer-grid { grid-template-columns: 1fr; } }
+
+  .footer-brand .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900; color: var(--gold); margin-bottom: 16px;
+  }
+  .footer-brand p { font-size: 0.9rem; line-height: 1.7; max-width: 280px; }
+
+  .footer-col h4 {
+    color: white; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase;
+    font-weight: 600; margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 10px; }
+  .footer-col a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.82rem;
+  }
+
+  .social-icons { display: flex; gap: 14px; }
+  .social-icons a {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.45); text-decoration: none; transition: all 0.2s;
+  }
+  .social-icons a:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* BACK TO TOP */
+  .back-top {
+    position: fixed; bottom: 30px; right: 30px;
+    background: var(--gold); color: var(--ink);
+    border: none; width: 44px; height: 44px;
+    border-radius: 50%; display: none;
+    align-items: center; justify-content: center;
+    cursor: pointer; font-size: 0.9rem;
+    box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+    transition: transform 0.2s;
+  }
+  .back-top:hover { transform: translateY(-2px); }
+
+  /* CHAT BTN */
+  .chat-btn {
+    position: fixed; bottom: 90px; right: 30px;
+    background: #25D366; color: white;
+    width: 50px; height: 50px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; z-index: 1000;
+    box-shadow: 0 4px 16px rgba(37,211,102,0.4);
+    text-decoration: none; transition: transform 0.2s;
+  }
+  .chat-btn:hover { transform: scale(1.1); }
+</style>
+</head>
+
+<body>
+<div id="progressBar"></div>
+
+<div class="loader" id="loader">
+  <div class="loader-logo">EDU CHAIN</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">EDU<span>CHAIN</span></a>
+  <div class="nav-links" id="navLinks">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#courses">Courses</a></li>
+      <li><a href="#campus">Campus</a></li>
+      <li><a href="#facilities">Facilities</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <input type="text" placeholder="Search courses..." class="search-box">
+    <i class="fa fa-moon-o dark-toggle" onclick="toggleDark()"></i>
+    <i class="fa fa-bars" onclick="toggleMenu()"></i>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Ranked #1 Global University 2024</div>
+    <h1>Empower Your Mind,<br><em>Change the World</em></h1>
+    <p>Join over 120,000 students worldwide at EduChain University — where world-class research meets transformative learning and boundless opportunity.</p>
+    <div class="hero-btns">
+      <a href="#courses" class="btn-primary">Explore Programs</a>
+      <a href="#campus" class="btn-secondary">Take a Virtual Tour</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><strong>120K+</strong><span>Students Enrolled</span></div>
+    <div class="stat"><strong>340+</strong><span>Academic Programs</span></div>
+    <div class="stat"><strong>94%</strong><span>Employment Rate</span></div>
+    <div class="stat"><strong>68</strong><span>Global Campuses</span></div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="courses" id="courses">
+  <div class="section-label">Academic Programs</div>
+  <h2 class="section-title">Courses We Offer</h2>
+  <p class="section-sub">From foundational diplomas to doctoral research, our programs are designed to challenge, inspire, and open doors to the careers of tomorrow.</p>
+
+  <div class="courses-grid">
+    <div class="course-card">
+      <div class="course-tag">Undergraduate</div>
+      <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&q=80" alt="Computer Science">
+      <div class="course-body">
+        <h3>Computer Science & AI</h3>
+        <p>Explore algorithms, machine learning, cloud computing, and build tomorrow's intelligent systems with industry-leading mentors.</p>
+        <div class="course-meta">
+          <span><i class="fa fa-clock-o"></i>4 Years</span>
+          <span><i class="fa fa-users"></i>280 Seats</span>
+          <span><i class="fa fa-star"></i>4.9/5.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="course-tag">Graduate</div>
+      <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80" alt="Business">
+      <div class="course-body">
+        <h3>Global Business & MBA</h3>
+        <p>Master finance, strategy, entrepreneurship, and leadership in a globally connected MBA program ranked in the world's top 50.</p>
+        <div class="course-meta">
+          <span><i class="fa fa-clock-o"></i>2 Years</span>
+          <span><i class="fa fa-users"></i>150 Seats</span>
+          <span><i class="fa fa-star"></i>4.8/5.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="course-tag">Doctoral</div>
+      <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&q=80" alt="Research">
+      <div class="course-body">
+        <h3>Biomedical Research & Sciences</h3>
+        <p>Conduct groundbreaking research in genomics, drug discovery, and clinical trials alongside Nobel Prize-winning faculty.</p>
+        <div class="course-meta">
+          <span><i class="fa fa-clock-o"></i>3–5 Years</span>
+          <span><i class="fa fa-users"></i>60 Seats</span>
+          <span><i class="fa fa-star"></i>5.0/5.0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAMPUS -->
+<section class="campus" id="campus">
+  <div class="section-label">Our Locations</div>
+  <h2 class="section-title">Global Campuses</h2>
+  <p class="section-sub">Experience world-class education in some of the most vibrant cities on the planet. Each campus offers a unique cultural and academic environment.</p>
+
+  <div class="campus-grid">
+    <div class="campus-item">
+      <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80" alt="London">
+      <div class="campus-overlay">
+        <div>
+          <h3>London, UK</h3>
+          <p>Our flagship campus — 45,000 students, 180 programs</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="campus-item">
+      <img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&q=80" alt="New York">
+      <div class="campus-overlay">
+        <div>
+          <h3>New York, USA</h3>
+          <p>Tech & Business hub — 28,000 students</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="campus-item">
+      <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" alt="Tokyo">
+      <div class="campus-overlay">
+        <div>
+          <h3>Tokyo, Japan</h3>
+          <p>Innovation & Engineering — 22,000 students</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="campus-item">
+      <img src="https://images.unsplash.com/photo-1583422409516-2895a77efded?w=600&q=80" alt="Dubai">
+      <div class="campus-overlay">
+        <div>
+          <h3>Dubai, UAE</h3>
+          <p>Finance & Commerce — 18,000 students</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="campus-item">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Sydney">
+      <div class="campus-overlay">
+        <div>
+          <h3>Sydney, Australia</h3>
+          <p>Environment & Marine Sciences — 12,000 students</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACILITIES -->
+<section class="facilities" id="facilities">
+  <div class="section-label">Campus Life</div>
+  <h2 class="section-title">World-Class Facilities</h2>
+  <p class="section-sub">We invest in environments where every student can thrive — intellectually, physically, and socially.</p>
+
+  <div class="facilities-grid">
+    <div class="facility-card">
+      <div class="facility-icon"><i class="fa fa-book"></i></div>
+      <h3>Research Library</h3>
+      <p>Over 4 million physical volumes and 12 million digital resources. Open 24/7 with silent study zones, collaboration rooms, and specialist librarians.</p>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-icon"><i class="fa fa-flask"></i></div>
+      <h3>Advanced Laboratories</h3>
+      <p>State-of-the-art wet labs, robotics suites, quantum computing clusters, and maker spaces equipped with the latest scientific instruments.</p>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-icon"><i class="fa fa-futbol-o"></i></div>
+      <h3>Sports & Wellness</h3>
+      <p>Olympic swimming pool, indoor arena, climbing wall, tennis courts, and a dedicated wellness center offering yoga, therapy, and nutrition coaching.</p>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-icon"><i class="fa fa-home"></i></div>
+      <h3>Student Residences</h3>
+      <p>Modern on-campus housing for 18,000 students with co-working spaces, rooftop gardens, and fast fiber internet in every room.</p>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-icon"><i class="fa fa-cutlery"></i></div>
+      <h3>Dining & Culture</h3>
+      <p>12 dining venues serving cuisines from around the world. Dedicated halal, vegan, and allergen-free kitchens, and weekly international food festivals.</p>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-icon"><i class="fa fa-wifi"></i></div>
+      <h3>Digital Campus</h3>
+      <p>Campus-wide gigabit Wi-Fi, cloud storage for every student, AI tutoring tools, and a dedicated tech support centre open every day of the year.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label">Student Stories</div>
+  <h2 class="section-title">What Our Students Say</h2>
+  <p class="section-sub">Hear from the brilliant minds who have walked these halls and gone on to change their fields.</p>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-quote">"</div>
+      <p>EduChain didn't just give me a degree — it gave me a global network, a research publication at 21, and the confidence to launch my own startup before graduation. I wouldn't trade the experience for anything.</p>
+      <div class="testimonial-author">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Sarah Chen">
+        <div>
+          <div class="stars">★★★★★</div>
+          <h4>Sarah Chen</h4>
+          <span>MSc Computer Science, London Campus — Now at Google DeepMind</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-quote">"</div>
+      <p>The MBA program at EduChain's New York campus exposed me to real-world case studies, live client projects, and professors who are active industry leaders. Within three months of graduating, I had three job offers.</p>
+      <div class="testimonial-author">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="James Okafor">
+        <div>
+          <div class="stars">★★★★★</div>
+          <h4>James Okafor</h4>
+          <span>MBA, New York Campus — VP Strategy at Goldman Sachs</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-quote">"</div>
+      <p>Studying biomedical research here was transformative. Access to cutting-edge labs and a supervisor who truly believed in my work helped me publish two papers in Nature before finishing my PhD.</p>
+      <div class="testimonial-author">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&q=80" alt="Priya Nair">
+        <div>
+          <div class="stars">★★★★★</div>
+          <h4>Dr. Priya Nair</h4>
+          <span>PhD Biomedical Sciences, London Campus — Research Fellow, MIT</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-quote">"</div>
+      <p>As an international student, I was nervous about fitting in. EduChain's multicultural environment made me feel at home immediately. The career services team helped me secure a work visa and my dream role in Tokyo.</p>
+      <div class="testimonial-author">
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" alt="Lukas Becker">
+        <div>
+          <div class="stars">★★★★☆</div>
+          <h4>Lukas Becker</h4>
+          <span>BEng Robotics, Tokyo Campus — Lead Engineer at Sony</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="contact">
+  <h2>Stay Ahead of the Curve</h2>
+  <p>Get the latest news on new programs, research breakthroughs, scholarship opportunities, and campus events delivered to your inbox.</p>
+  <div class="newsletter-form">
+    <input type="email" placeholder="Enter your email address">
+    <button onclick="subscribe()">Subscribe</button>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-content">
+    <h1>Your Future Starts<br><em>Right Here</em></h1>
+    <a href="#courses" class="btn-primary">Apply for 2025 Intake</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-text">EDUCHAIN</div>
+      <p>A world-class institution shaping the leaders, thinkers, and innovators of tomorrow. Established 1887. Reimagined for the future.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Programs</h4>
+      <ul>
+        <li><a href="#">Undergraduate</a></li>
+        <li><a href="#">Postgraduate</a></li>
+        <li><a href="#">Doctoral Research</a></li>
+        <li><a href="#">Online Courses</a></li>
+        <li><a href="#">Executive Education</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Campus Life</h4>
+      <ul>
+        <li><a href="#">Accommodation</a></li>
+        <li><a href="#">Sports & Wellbeing</a></li>
+        <li><a href="#">Student Societies</a></li>
+        <li><a href="#">International Students</a></li>
+        <li><a href="#">Scholarships</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>About</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Research</a></li>
+        <li><a href="#">Rankings</a></li>
+        <li><a href="#">Careers at EduChain</a></li>
+        <li><a href="#">Press & Media</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© <span id="year"></span> EduChain University. All rights reserved.</p>
+    <div class="social-icons">
+      <a href="#"><i class="fa fa-facebook"></i></a>
+      <a href="#"><i class="fa fa-twitter"></i></a>
+      <a href="#"><i class="fa fa-instagram"></i></a>
+      <a href="#"><i class="fa fa-linkedin"></i></a>
+      <a href="#"><i class="fa fa-youtube-play"></i></a>
+    </div>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="topBtn" onclick="topFunction()">
+  <i class="fa fa-arrow-up"></i>
+</button>
+
+<!-- CHAT BUTTON -->
+<a href="https://wa.me/919087751113" class="chat-btn">
+  <i class="fa fa-comments"></i>
+</a>
+
+<script>
+  // Loader
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').style.display = 'none';
+    }, 1200);
+  });
+
+  // Progress bar + back to top
+  window.onscroll = function () {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('progressBar').style.width = (winScroll / height * 100) + '%';
+    const btn = document.getElementById('topBtn');
+    btn.style.display = winScroll > 300 ? 'flex' : 'none';
+  };
+
+  function topFunction() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Dark mode
+  function toggleDark() {
+    document.body.classList.toggle('dark');
+  }
+
+  // Newsletter
+  function subscribe() {
+    const input = document.querySelector('.newsletter-form input');
+    if (input.value && input.value.includes('@')) {
+      alert('🎉 Welcome to EduChain! You\'ll receive our next update soon.');
+      input.value = '';
+    } else {
+      alert('Please enter a valid email address.');
+    }
+  }
+
+  // Mobile menu
+  function toggleMenu() {
+    const nav = document.getElementById('navLinks');
+    nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+  }
+
+  // Footer year
+  document.getElementById('year').innerHTML = new Date().getFullYear();
+
+  // Intersection observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = 1; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.course-card, .facility-card, .testimonial-card, .campus-item').forEach(el => {
+    el.style.opacity = 0;
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
